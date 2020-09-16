@@ -1,7 +1,5 @@
 package com.geekbrains.java.level_2.lesson_8;
 
-import com.geekbrains.java.level_2.lesson_8.GeekbrainsList;
-
 public class SinglyLinkedList implements GeekbrainsList {
     private Node head;
 
@@ -16,7 +14,9 @@ public class SinglyLinkedList implements GeekbrainsList {
 
     private void add(Node current, String o) {
         if (current.getNext() == null) {
-            current.setNext(new Node(o));
+            Node next = new Node(o);
+            current.setNext(next);
+            next.setPrev(current);
             return;
         }
         add(current.getNext(), o);
@@ -28,7 +28,9 @@ public class SinglyLinkedList implements GeekbrainsList {
             return;
         } else {
             if (head.getVal().equals(o)) {
+                Node prev = head.getPrev();
                 head = head.getNext();
+                head.setPrev(prev);
                 return;
             }
         }
@@ -40,7 +42,9 @@ public class SinglyLinkedList implements GeekbrainsList {
             return;
         }
         if (current.getVal().equals(o)) {
-            prev.setNext(current.getNext());
+            Node next = current.getNext();
+            prev.setNext(next);
+            next.setPrev(prev);
             return;
         }
         remove(current, current.getNext(), o);
@@ -54,15 +58,17 @@ public class SinglyLinkedList implements GeekbrainsList {
     }
 
     private static class Node {
-        private String val;
+        private final String val;
+        private Node prev;
         private Node next;
 
         public Node(String val) {
-            this(val, null);
+            this(val, null, null);
         }
 
-        public Node(String val, Node next) {
+        public Node(String val, Node prev, Node next) {
             this.val = val;
+            this.prev = prev;
             this.next = next;
         }
 
@@ -74,14 +80,23 @@ public class SinglyLinkedList implements GeekbrainsList {
             return next;
         }
 
+        public Node getPrev() {
+            return prev;
+        }
+
         public void setNext(Node next) {
             this.next = next;
+        }
+
+        public void setPrev(Node prev) {
+            this.prev = prev;
         }
 
         @Override
         public String toString() {
             return "Node{" +
                     "val='" + val + '\'' +
+                    ", prev=" + ((prev != null) ? prev.getVal() : null) +
                     ", next=" + next +
                     '}';
         }
