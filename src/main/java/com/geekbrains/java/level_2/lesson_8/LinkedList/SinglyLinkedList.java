@@ -2,7 +2,6 @@ package com.geekbrains.java.level_2.lesson_8.LinkedList;
 
 public class SinglyLinkedList implements GeekbrainsList {
     private Node head;
-    private LinkedIterator iterator;
 
     @Override
     public void add(String o) {
