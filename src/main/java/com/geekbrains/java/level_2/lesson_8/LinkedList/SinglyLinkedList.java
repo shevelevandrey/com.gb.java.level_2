@@ -1,7 +1,8 @@
-package com.geekbrains.java.level_2.lesson_8;
+package com.geekbrains.java.level_2.lesson_8.LinkedList;
 
 public class SinglyLinkedList implements GeekbrainsList {
     private Node head;
+    private LinkedIterator iterator;
 
     @Override
     public void add(String o) {
@@ -44,10 +45,17 @@ public class SinglyLinkedList implements GeekbrainsList {
         if (current.getVal().equals(o)) {
             Node next = current.getNext();
             prev.setNext(next);
-            next.setPrev(prev);
+            if (next != null) {
+                next.setPrev(prev);
+            }
             return;
         }
         remove(current, current.getNext(), o);
+    }
+
+    @Override
+    public GeekbrainsIterator getIterator() {
+        return new LinkedIterator(head);
     }
 
     @Override
@@ -55,50 +63,5 @@ public class SinglyLinkedList implements GeekbrainsList {
         return "{" +
                 head +
                 '}';
-    }
-
-    private static class Node {
-        private final String val;
-        private Node prev;
-        private Node next;
-
-        public Node(String val) {
-            this(val, null, null);
-        }
-
-        public Node(String val, Node prev, Node next) {
-            this.val = val;
-            this.prev = prev;
-            this.next = next;
-        }
-
-        public String getVal() {
-            return val;
-        }
-
-        public Node getNext() {
-            return next;
-        }
-
-        public Node getPrev() {
-            return prev;
-        }
-
-        public void setNext(Node next) {
-            this.next = next;
-        }
-
-        public void setPrev(Node prev) {
-            this.prev = prev;
-        }
-
-        @Override
-        public String toString() {
-            return "Node{" +
-                    "val='" + val + '\'' +
-                    ", prev=" + ((prev != null) ? prev.getVal() : null) +
-                    ", next=" + next +
-                    '}';
-        }
     }
 }
