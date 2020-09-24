@@ -7,45 +7,31 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class Client {
+    private Socket clientSocket;
     private DataInputStream in;
     private DataOutputStream out;
-    private JTextArea charArea;
 
-    public Client() {}
-
-    public Client(JTextArea charArea) {
-        this.charArea = charArea;
-
+    public Client(String endpointHost, int endpointPort, JTextArea charArea) {
         try {
-            Socket socket = new Socket("127.0.0.1", 18443);
-            System.out.println("Client info: " + socket);
+            clientSocket = new Socket(endpointHost, endpointPort);
+            System.out.println("Client info: " + clientSocket);
 
-            in = new DataInputStream(socket.getInputStream());
-            out = new DataOutputStream(socket.getOutputStream());
+            in = new DataInputStream(clientSocket.getInputStream());
+            out = new DataOutputStream(clientSocket.getOutputStream());
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        while (true) {
-                            String message = in.readUTF();
-                            charArea.append(message);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
+            new Thread(() -> {
+                try {
+                    while (!clientSocket.isInputShutdown()) {
+                        String message = in.readUTF();
+                        charArea.append("[My] " + message + "\n");
                     }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }).start();
 
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                in.close();
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -55,9 +41,5 @@ public class Client {
 
     public DataOutputStream getOut() {
         return out;
-    }
-
-    public static void main(String[] args) {
-        new Client();
     }
 }
