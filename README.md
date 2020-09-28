@@ -1,1 +1,1 @@
-# geekbrains-java-level_2
+# gb-java-level_2
